@@ -128,6 +128,7 @@ public class MapActivity extends FragmentActivity implements
                 }
 
             }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
             }
@@ -235,12 +236,18 @@ public class MapActivity extends FragmentActivity implements
         int quantity = parkingSingleton.getParkings().get(markerIndex).getQuantity();
         String free = parkingSingleton.getParkings().get(markerIndex).getFree();
         String days = parkingSingleton.getParkings().get(markerIndex).getDays();
+        LatLng latLng = parkingSingleton.getParkings().get(markerIndex).getLatLng();
+
+        double latitude = latLng.latitude;
+        double longitude = latLng.longitude;
 
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putInt("quantity", quantity);
         bundle.putString("free", free);
         bundle.putString("days", days);
+        bundle.putDouble("latitude", latitude);
+        bundle.putDouble("longitude", longitude);
 
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragment = new ParkingFragment();

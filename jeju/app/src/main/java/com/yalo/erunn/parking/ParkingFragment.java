@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kakao.kakaonavi.KakaoNaviParams;
 import com.kakao.kakaonavi.KakaoNaviService;
 import com.kakao.kakaonavi.Location;
@@ -37,6 +38,7 @@ public class ParkingFragment extends Fragment {
     private String free;
     private String days;
     private int price;
+    private double latitude, longitude;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class ParkingFragment extends Fragment {
             quantity = getArguments().getInt("quantity");
             free = getArguments().getString("free");
             days = getArguments().getString("days");
+            latitude = getArguments().getDouble("latitude");
+            longitude = getArguments().getDouble("longitude");
         }
     }
 
@@ -81,6 +85,7 @@ public class ParkingFragment extends Fragment {
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
+//                                              Location destination = Location.newBuilder(name, latitude, longitude).build();
                                                 Location destination = Location.newBuilder("카카오 판교 오피스", 127.10821222694533, 37.40205604363057).build();
                                                 NaviOptions options = NaviOptions.newBuilder().setCoordType(CoordType.WGS84).setVehicleType(VehicleType.FIRST).setRpOption(RpOption.SHORTEST).build();
                                                 KakaoNaviParams.Builder builder = KakaoNaviParams.newBuilder(destination).setNaviOptions(options);

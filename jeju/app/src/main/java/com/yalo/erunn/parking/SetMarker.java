@@ -49,6 +49,8 @@ public class SetMarker extends AsyncTask<Void, Integer, Void> {
                 .zIndex(values[0])
                 .position(location)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking)));
+
+        parkingSingleton.setLatLng(location, values[0]);
     }
 
     @Override

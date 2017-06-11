@@ -1,5 +1,7 @@
 package com.yalo.erunn.parking;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 /**
@@ -25,5 +27,7 @@ public class ParkingSingleton {
     public void setParkings(Parking parking){this.parkings.add(parking);};
 
     public ArrayList<Parking> getParkings(){return this.parkings;};
+
+    public void setLatLng(LatLng latLng, int index){this.parkings.get(index).setLatLng(latLng);};
 
 }
