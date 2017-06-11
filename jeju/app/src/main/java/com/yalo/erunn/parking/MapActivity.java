@@ -54,16 +54,11 @@ public class MapActivity extends FragmentActivity implements
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
-
-    Retrofit retrofit;
-    ApiService apiService;
-
-    ArrayList<Parking> parkings = new ArrayList<Parking>();
-
+    private Retrofit retrofit;
+    private ApiService apiService;
     private FrameLayout mMapview;
-
-    Fragment fragment;
-
+    private Fragment fragment;
+    private ParkingSingleton parkingSingleton = ParkingSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +67,6 @@ public class MapActivity extends FragmentActivity implements
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -94,18 +88,14 @@ public class MapActivity extends FragmentActivity implements
                 LatLng pickerGeo = new LatLng(pickerLat, pickerLng);
 
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickerGeo, 15));
-
             }
 
             @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
-                Log.v("Test", status + "");
-
+                Log.v("error", status + " in onPlaceSelected");
             }
         });
-
-
         mMapview = (FrameLayout) mapFragment.getView();
 
         retrofit = new Retrofit.Builder().baseUrl(ApiService.ApiURL).build();
@@ -117,46 +107,31 @@ public class MapActivity extends FragmentActivity implements
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String result = response.body().string();
-                    try {
-                        JSONArray jsonArray = new JSONArray(result);
-                        Log.v("Test",jsonArray.length()+"AAAAAAAAAA");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            parkings.add(new Parking(jsonObject.getString("주차장명")
-                                    , jsonObject.getString("소재지도로명주소")
-                                    , jsonObject.getString("소재지지번주소")
-                                    , jsonObject.getInt("주차구획수")
-                                    , jsonObject.getString("요금정보")
-                                    , jsonObject.getString("운영요일")
-                            ));
-                            Log.v("Test",i+"");
+                    JSONArray jsonArray = new JSONArray(result);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        Parking parking = new Parking(jsonObject.getString("주차장명")
+                                , jsonObject.getString("소재지지번주소")
+                                , jsonObject.getInt("주차구획수")
+                                , jsonObject.getString("요금정보")
+                                , jsonObject.getString("운영요일"));
 
-                            if (i == jsonArray.length()-2) {
-                                Log.v("Test","if");
-                                SetMarker setMarker = new SetMarker(mMap, getApplicationContext(), parkings);
-                                setMarker.execute();
+                        parkingSingleton.setParkings(parking);
 
-                            }
-
-
-
+                        if (i == jsonArray.length() - 2) {
+                            SetMarker setMarker = new SetMarker(mMap, getApplicationContext());
+                            setMarker.execute();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Log.v("error", e + " in onResponse");
                 }
 
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
             }
         });
-
-
         mapFragment.getMapAsync(this);
     }
 
@@ -185,15 +160,12 @@ public class MapActivity extends FragmentActivity implements
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 30, 30);
-
-
         }
         enableMyLocation();
 
     }
 
     private void enableMyLocation() {
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
@@ -259,10 +231,10 @@ public class MapActivity extends FragmentActivity implements
     public boolean onMarkerClick(Marker marker) {
         int markerIndex = (int) marker.getZIndex();
 
-        String name = parkings.get(markerIndex).getName();
-        int quantity = parkings.get(markerIndex).getQuantity();
-        String free = parkings.get(markerIndex).getFree();
-        String days = parkings.get(markerIndex).getDays();
+        String name = parkingSingleton.getParkings().get(markerIndex).getName();
+        int quantity = parkingSingleton.getParkings().get(markerIndex).getQuantity();
+        String free = parkingSingleton.getParkings().get(markerIndex).getFree();
+        String days = parkingSingleton.getParkings().get(markerIndex).getDays();
 
         Bundle bundle = new Bundle();
         bundle.putString("name", name);

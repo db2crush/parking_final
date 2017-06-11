@@ -43,7 +43,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.link_login)
-    void linkLogin(){
+    void linkLogin() {
 
     }
 
@@ -95,11 +95,13 @@ public class SignupActivity extends AppCompatActivity {
         setResult(RESULT_OK, null);
         finish();
     }
+
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_SHORT).show();
 
         _signupButton.setEnabled(true);
     }
+
     public boolean validate() {
         boolean valid = true;
 
@@ -132,7 +134,7 @@ public class SignupActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (mobile.isEmpty() || mobile.length()!=10) {
+        if (mobile.isEmpty() || mobile.length() != 10) {
             _mobileText.setError("Enter Valid Mobile Number");
             valid = false;
         } else {

@@ -21,23 +21,19 @@ import java.util.Locale;
  */
 
 public class SetMarker extends AsyncTask<Void, Integer, Void> {
-    GoogleMap mMap;
-    Context context;
-    ArrayList<Parking> parkings;
+    private GoogleMap mMap;
+    private Context context;
+    private Geocoder mGeoCoder;
 
-    Geocoder mGeoCoder;
-    String address, name;
-    double lat, lng;
-    LatLng park = null;
-    List<Address> addrs = null;
+    private String address, name;
+    private double lat, lng;
 
+    private ParkingSingleton parkingSingleton = ParkingSingleton.getInstance();
 
-    SetMarker(GoogleMap map, Context context, ArrayList<Parking> parkings) {
+    SetMarker(GoogleMap map, Context context) {
         this.mMap = map;
         this.context = context;
-        this.parkings = parkings;
         this.mGeoCoder = new Geocoder(context, Locale.KOREA);
-
     }
 
     @Override
@@ -47,38 +43,31 @@ public class SetMarker extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        Log.v("Test",values[0]+"");
         super.onProgressUpdate(values);
-        park = new LatLng(lat, lng);
-
+        LatLng location = new LatLng(lat, lng);
         mMap.addMarker(new MarkerOptions()
                 .zIndex(values[0])
-                .position(park)
+                .position(location)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking)));
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.v("index",name+" " +"doinbackground");
-        for (int i = 0; i < parkings.size(); i++) {
-            address = parkings.get(i).getAddress();
-            name = parkings.get(i).getName();
+        List<Address> addressList;
+        for (int i = 0; i < parkingSingleton.getParkings().size(); i++) {
+            address = parkingSingleton.getParkings().get(i).getAddress();
+            name = parkingSingleton.getParkings().get(i).getName();
             try {
-                addrs = mGeoCoder.getFromLocationName(address, 1);
-
-                if (!addrs.isEmpty()) {
-                    lat = addrs.get(0).getLatitude();
-                    lng = addrs.get(0).getLongitude();
-                    addrs = null;
+                addressList = mGeoCoder.getFromLocationName(address, 1);
+                if (!addressList.isEmpty()) {
+                    lat = addressList.get(0).getLatitude();
+                    lng = addressList.get(0).getLongitude();
                     publishProgress(i);
                 } else
                     continue;
-
             } catch (IOException e) {
-                Log.v("error", e + "");
+                Log.v("error", e + " in doInBackground");
             }
-
-
         }
         return null;
     }
