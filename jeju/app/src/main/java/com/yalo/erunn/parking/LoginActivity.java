@@ -1,6 +1,7 @@
 package com.yalo.erunn.parking;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.link_signup)
     void btnSignup() {
+        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+        startActivity(intent);
 
     }
 
@@ -59,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("확인중...");
         progressDialog.show();
 
         String email = _emailText.getText().toString();
@@ -85,14 +88,14 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError("이메일을 제대로 입력해주세요");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            _passwordText.setError("비밀번호는 4글자 이상입니다");
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -102,13 +105,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
 
         _loginButton.setEnabled(true);
     }
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Intent returnIntent = new Intent();
+        setResult(0,returnIntent);
         finish();
     }
 

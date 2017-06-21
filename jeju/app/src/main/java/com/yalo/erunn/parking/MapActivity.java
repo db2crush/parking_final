@@ -3,6 +3,8 @@ package com.yalo.erunn.parking;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -11,11 +13,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -24,6 +28,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -59,11 +64,34 @@ public class MapActivity extends FragmentActivity implements
     private FrameLayout mMapview;
     private Fragment fragment;
     private ParkingSingleton parkingSingleton = ParkingSingleton.getInstance();
+    private Marker clickedMarker;
+    private Button mypark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        mypark = (Button)findViewById(R.id.map_mypark);
+        mypark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MapActivity.this, ParkingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        final ProgressDialog progressDialog = new ProgressDialog(MapActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("주차장 정보 받아오는 중..");
+        progressDialog.show();
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 10000);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -109,16 +137,18 @@ public class MapActivity extends FragmentActivity implements
                     String result = response.body().string();
                     JSONArray jsonArray = new JSONArray(result);
                     for (int i = 0; i < jsonArray.length(); i++) {
+
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         Parking parking = new Parking(jsonObject.getString("주차장명")
                                 , jsonObject.getString("소재지지번주소")
                                 , jsonObject.getInt("주차구획수")
                                 , jsonObject.getString("요금정보")
                                 , jsonObject.getString("운영요일"));
+                        Log.v("json", jsonObject.getString("주차장명"));
 
                         parkingSingleton.setParkings(parking);
 
-                        if (i == jsonArray.length() - 2) {
+                        if (i == jsonArray.length() - 1) {
                             SetMarker setMarker = new SetMarker(mMap, getApplicationContext());
                             setMarker.execute();
                         }
@@ -140,8 +170,8 @@ public class MapActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        LatLng initial = new LatLng(33.485903, 126.47837);
 
+        LatLng initial = new LatLng(33.485903, 126.47837);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initial, 16));
 
@@ -230,13 +260,19 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if(marker != clickedMarker && clickedMarker!=null)
+            clickedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.parking));
+        clickedMarker = marker;
         int markerIndex = (int) marker.getZIndex();
+
 
         String name = parkingSingleton.getParkings().get(markerIndex).getName();
         int quantity = parkingSingleton.getParkings().get(markerIndex).getQuantity();
         String free = parkingSingleton.getParkings().get(markerIndex).getFree();
         String days = parkingSingleton.getParkings().get(markerIndex).getDays();
         LatLng latLng = parkingSingleton.getParkings().get(markerIndex).getLatLng();
+
+        clickedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.parking_red));
 
         double latitude = latLng.latitude;
         double longitude = latLng.longitude;
@@ -265,5 +301,6 @@ public class MapActivity extends FragmentActivity implements
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.remove(fragment);
         fragmentTransaction.commit();
+        clickedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.parking));
     }
 }

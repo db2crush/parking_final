@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextClock;
 
+import com.google.android.gms.maps.MapsInitializer;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

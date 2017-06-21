@@ -27,6 +27,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/parking_image"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_marginBottom="5dp"
@@ -62,6 +63,41 @@
                 android:layout_above="@+id/pay"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:gravity="left"
+                        android:padding="16dp"
+                        android:text="주차장명"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/parking_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:background="#0000"
+                        android:gravity="right"
+                        android:padding="16dp"
+                        android:textColor="@color/subtext"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/devider" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -69,7 +105,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/checkin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -81,14 +116,13 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        android:id="@+id/checkintime"
+                        android:id="@+id/parking_checkin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:background="#0000"
                         android:gravity="right"
                         android:padding="16dp"
-                        android:text="2017년 6월 10일, 2:00 PM"
                         android:textColor="@color/subtext"
                         android:textSize="16dp" />
                 </LinearLayout>
@@ -108,27 +142,25 @@
 
 
                     <TextView
-                        android:id="@+id/checkout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#0000"
                         android:gravity="left"
                         android:padding="16dp"
-                        android:text="주차한 시간"
+                        android:text="주차 종료시각"
                         android:textColor="@color/text"
                         android:textSize="16dp" />
 
 
                     <TextView
-                        android:id="@+id/checkouttime"
+                        android:id="@+id/parking_checkout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.6"
                         android:background="#0000"
                         android:gravity="right"
                         android:padding="16dp"
-                        android:text="2 시간"
                         android:textColor="@color/subtext"
                         android:textSize="16dp" />
                 </LinearLayout>
@@ -148,7 +180,6 @@
 
 
                     <TextView
-                        android:id="@+id/totalprice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -160,14 +191,13 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        android:id="@+id/tv"
+                        android:id="@+id/parking_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#0000"
                         android:gravity="right"
                         android:padding="16dp"
-                        android:text="20,000 원"
                         android:textColor="@color/subtext"
                         android:textSize="16dp" />
                 </LinearLayout>
@@ -187,8 +217,8 @@
                     android:orientation="horizontal">
 
 
-                    <TextView
-                        android:id="@+id/conditions"
+                    <Button
+                        android:id="@+id/parking_condition"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -230,37 +260,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:text="개인 정보 입력"
+                    android:text="비상연락처"
                     android:textColor="#333333"
                     android:textSize="16dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="#f7f7f9"
-                    android:orientation="vertical">
-                    <!--  Email Label -->
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp">
-
-                        <EditText
-                            android:id="@+id/input_email_parking"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="이메일"
-                            android:inputType="textEmailAddress"
-                            android:textColor="#000" />
-                    </android.support.design.widget.TextInputLayout>
-
-
-                </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -279,7 +281,7 @@
                         android:layout_marginTop="8dp">
 
                         <EditText
-                            android:id="@+id/input_phone_parking"
+                            android:id="@+id/parking_phone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="휴대폰 번호"
@@ -299,7 +301,7 @@
     </ScrollView>
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_login"
+        android:id="@+id/parking_quit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

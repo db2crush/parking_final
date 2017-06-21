@@ -48,6 +48,7 @@
         <activity android:name=".MapActivity"/>
         <activity android:name=".SignupActivity"/>
         <activity android:name=".ParkingActivity"/>
+        <activity android:name=".BeaconActivity"/>
 
 
     </application>

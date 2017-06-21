@@ -2,6 +2,7 @@ package com.yalo.erunn.parking;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,9 @@ public class SignupActivity extends AppCompatActivity {
 
     @OnClick(R.id.link_login)
     void linkLogin() {
+        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -66,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setMessage("계정 만드는중...");
         progressDialog.show();
 
         String name = _nameText.getText().toString();
@@ -97,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), "회원가입 실패", Toast.LENGTH_SHORT).show();
 
         _signupButton.setEnabled(true);
     }
@@ -112,15 +116,15 @@ public class SignupActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+        if (name.isEmpty() || name.length() < 2) {
+            _nameText.setError("최소 2글자 이상입니다.");
             valid = false;
         } else {
             _nameText.setError(null);
         }
 
         if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
+            _addressText.setError("운전면허 정보가 없습니다.");
             valid = false;
         } else {
             _addressText.setError(null);
@@ -128,28 +132,28 @@ public class SignupActivity extends AppCompatActivity {
 
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError("이메일 정보가 유효하지 않습니다.");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (mobile.isEmpty() || mobile.length() != 10) {
-            _mobileText.setError("Enter Valid Mobile Number");
+            _mobileText.setError("휴대폰 번호가 유효하지 않습니다.");
             valid = false;
         } else {
             _mobileText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            _passwordText.setError("4글자 이상 10글자 미만이어야 합니다.");
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
+            _reEnterPasswordText.setError("패스워드가 일치하지 않습니다.");
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);

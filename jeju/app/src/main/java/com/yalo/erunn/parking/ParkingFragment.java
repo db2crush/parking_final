@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,15 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.kakao.kakaonavi.KakaoNaviParams;
-import com.kakao.kakaonavi.KakaoNaviService;
-import com.kakao.kakaonavi.Location;
-import com.kakao.kakaonavi.NaviOptions;
-import com.kakao.kakaonavi.options.CoordType;
-import com.kakao.kakaonavi.options.RpOption;
-import com.kakao.kakaonavi.options.VehicleType;
 
 /**
  * Created by erunn on 2017-06-06.
@@ -40,6 +32,8 @@ public class ParkingFragment extends Fragment {
     private int price;
     private double latitude, longitude;
 
+    private boolean flag = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +45,16 @@ public class ParkingFragment extends Fragment {
             latitude = getArguments().getDouble("latitude");
             longitude = getArguments().getDouble("longitude");
         }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0)
+            flag = true;
+        if(resultCode == 0)
+            flag = true;
     }
 
     @Override
@@ -78,29 +82,18 @@ public class ParkingFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // 'YES'
-                                AlertDialog.Builder alert_navi_confirm = new AlertDialog.Builder(getActivity());
-                                alert_navi_confirm.setTitle("네비게이션 길 찾기");
-                                alert_navi_confirm.setMessage("이용하시겠습니까?").setCancelable(false).setPositiveButton("네",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-//                                              Location destination = Location.newBuilder(name, latitude, longitude).build();
-                                                Location destination = Location.newBuilder("카카오 판교 오피스", 127.10821222694533, 37.40205604363057).build();
-                                                NaviOptions options = NaviOptions.newBuilder().setCoordType(CoordType.WGS84).setVehicleType(VehicleType.FIRST).setRpOption(RpOption.SHORTEST).build();
-                                                KakaoNaviParams.Builder builder = KakaoNaviParams.newBuilder(destination).setNaviOptions(options);
-                                                KakaoNaviService.navigate(getActivity(), builder.build());
-                                            }
-                                        }).setNegativeButton("취소",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                // 'No'
-                                                return;
-                                            }
-                                        });
-                                AlertDialog alert = alert_navi_confirm.create();
-                                alert.show();
+                                if (flag) {
+                                    Intent intent = new Intent(getActivity(), BeaconActivity.class);
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("free", free);
+                                    startActivity(intent);
+                                } else {
+                                    Intent intentLogin = new Intent(getActivity(), LoginActivity.class);
+                                    startActivityForResult(intentLogin, 0);
+
+                                }
+
+
                             }
                         }).setNegativeButton("취소",
                         new DialogInterface.OnClickListener() {
